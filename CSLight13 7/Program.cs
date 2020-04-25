@@ -16,10 +16,10 @@ namespace CSLight13_7
             Train train = new Train();
             Display display = new Display(direction, cashbox, train);
 
-            bool firstStepCompleted = false;
-            bool secondStepCompleted = false;
-            bool thirdStepCompleted = false;
-            bool fourthStepCompleted = false;
+            bool createDiractionCompleted = false;
+            bool sellingTicketCompleted = false;
+            bool createTrainCompleted = false;
+            bool sendTrainCompleted = false;
             int userInput = -1;
 
             Console.WriteLine("Добро пожаловать в планировщик поездов. Нажмите любую клавищу, чтобы перейти к созданию плана поезда.");
@@ -30,22 +30,22 @@ namespace CSLight13_7
                 Console.Clear();
                 display.DisplayProgress();
 
-                if (!firstStepCompleted)
+                if (!createDiractionCompleted)
                 {
                     Console.WriteLine("1. Перейти к созданию направления поезда.");
                 }
 
-                if (firstStepCompleted && !secondStepCompleted)
+                if (createDiractionCompleted && !sellingTicketCompleted)
                 {
                     Console.WriteLine("2. Начать продажу билетов.");
                 }
 
-                if (secondStepCompleted && !thirdStepCompleted)
+                if (sellingTicketCompleted && !createTrainCompleted)
                 {
                     Console.WriteLine("3. Приступить к формированию поезда.");
                 }
 
-                if (thirdStepCompleted && !fourthStepCompleted)
+                if (createTrainCompleted && !sendTrainCompleted)
                 {
                     Console.WriteLine("4. Поезд готов к отправлению. Отправить поезд.");
                 }
@@ -57,7 +57,7 @@ namespace CSLight13_7
                 switch (userInput)
                 {
                     case 1:
-                        if (!firstStepCompleted)
+                        if (!createDiractionCompleted)
                         {
                             Console.Clear();
                             Console.WriteLine("Введите, пожалуйста, откуда будет поезд?");
@@ -66,27 +66,27 @@ namespace CSLight13_7
                             Console.WriteLine("Введите, пожалуйста, куда направдяется поезд?");
                             string destinationPoint = Console.ReadLine();
                             direction.CreateDirection(startingPoint, destinationPoint);
-                            firstStepCompleted = true;
+                            createDiractionCompleted = true;
                         }
                         break;
                     case 2:
-                        if (firstStepCompleted && !secondStepCompleted)
+                        if (createDiractionCompleted && !sellingTicketCompleted)
                         {
                             Console.Clear();
                             Console.WriteLine("Количество проданных билетов - " + cashbox.SellingTicket());
                             Console.ReadKey();
-                            secondStepCompleted = true;
+                            sellingTicketCompleted = true;
                         }
                         break;
                     case 3:
-                        if (secondStepCompleted && !thirdStepCompleted)
+                        if (sellingTicketCompleted && !createTrainCompleted)
                         {
                             train.CreateTrain(constructor.CreateTrain(cashbox.countPasangers));
-                            thirdStepCompleted = true;
+                            createTrainCompleted = true;
                         }
                         break;
                     case 4:
-                        if (thirdStepCompleted && !fourthStepCompleted)
+                        if (createTrainCompleted && !sendTrainCompleted)
                         {
                             Console.Clear();
                             Console.WriteLine("Поезд отправлен. Хотите спланировать новую поездку?");
@@ -96,10 +96,10 @@ namespace CSLight13_7
 
                             if (userChoice == "1")
                             {
-                                firstStepCompleted = false;
-                                secondStepCompleted = false;
-                                thirdStepCompleted = false;
-                                fourthStepCompleted = false;
+                                createDiractionCompleted = false;
+                                sellingTicketCompleted = false;
+                                createTrainCompleted = false;
+                                sendTrainCompleted = false;
                                 direction = new Direction();
                                 cashbox = new Cashbox();
                                 constructor = new ConstructorTrain();
