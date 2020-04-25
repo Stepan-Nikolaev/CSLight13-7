@@ -11,15 +11,15 @@ namespace CSLight13_7
         static void Main(string[] args)
         {
             Direction direction = new Direction();
-            Pasangers pasangers = new Pasangers();
+            Cashbox cashbox = new Cashbox();
             ConstructorTrain constructor = new ConstructorTrain();
             Train train = new Train();
-            Display display = new Display(direction, pasangers, train);
+            Display display = new Display(direction, cashbox, train);
 
-            bool step1 = false;
-            bool step2 = false;
-            bool step3 = false;
-            bool step4 = false;
+            bool firstStepCompleted = false;
+            bool secondStepCompleted = false;
+            bool thirdStepCompleted = false;
+            bool fourthStepCompleted = false;
             int userInput = -1;
 
             Console.WriteLine("Добро пожаловать в планировщик поездов. Нажмите любую клавищу, чтобы перейти к созданию плана поезда.");
@@ -30,22 +30,22 @@ namespace CSLight13_7
                 Console.Clear();
                 display.DisplayProgress();
 
-                if (!step1)
+                if (!firstStepCompleted)
                 {
                     Console.WriteLine("1. Перейти к созданию направления поезда.");
                 }
 
-                if (step1 && !step2)
+                if (firstStepCompleted && !secondStepCompleted)
                 {
                     Console.WriteLine("2. Начать продажу билетов.");
                 }
 
-                if (step2 && !step3)
+                if (secondStepCompleted && !thirdStepCompleted)
                 {
                     Console.WriteLine("3. Приступить к формированию поезда.");
                 }
 
-                if (step3 && !step4)
+                if (thirdStepCompleted && !fourthStepCompleted)
                 {
                     Console.WriteLine("4. Поезд готов к отправлению. Отправить поезд.");
                 }
@@ -57,7 +57,7 @@ namespace CSLight13_7
                 switch (userInput)
                 {
                     case 1:
-                        if (!step1)
+                        if (!firstStepCompleted)
                         {
                             Console.Clear();
                             Console.WriteLine("Введите, пожалуйста, откуда будет поезд?");
@@ -66,27 +66,27 @@ namespace CSLight13_7
                             Console.WriteLine("Введите, пожалуйста, куда направдяется поезд?");
                             string destinationPoint = Console.ReadLine();
                             direction.CreateDirection(startingPoint, destinationPoint);
-                            step1 = true;
+                            firstStepCompleted = true;
                         }
                         break;
                     case 2:
-                        if (step1 && !step2)
+                        if (firstStepCompleted && !secondStepCompleted)
                         {
                             Console.Clear();
-                            Console.WriteLine("Количество проданных билетов - " + pasangers.SellingTicket());
+                            Console.WriteLine("Количество проданных билетов - " + cashbox.SellingTicket());
                             Console.ReadKey();
-                            step2 = true;
+                            secondStepCompleted = true;
                         }
                         break;
                     case 3:
-                        if (step2 && !step3)
+                        if (secondStepCompleted && !thirdStepCompleted)
                         {
-                            train.CreateTrain(constructor.CreateTrain(pasangers.countPasangers));
-                            step3 = true;
+                            train.CreateTrain(constructor.CreateTrain(cashbox.countPasangers));
+                            thirdStepCompleted = true;
                         }
                         break;
                     case 4:
-                        if (step3 && !step4)
+                        if (thirdStepCompleted && !fourthStepCompleted)
                         {
                             Console.Clear();
                             Console.WriteLine("Поезд отправлен. Хотите спланировать новую поездку?");
@@ -96,15 +96,15 @@ namespace CSLight13_7
 
                             if (userChoice == "1")
                             {
-                                step1 = false;
-                                step2 = false;
-                                step3 = false;
-                                step4 = false;
+                                firstStepCompleted = false;
+                                secondStepCompleted = false;
+                                thirdStepCompleted = false;
+                                fourthStepCompleted = false;
                                 direction = new Direction();
-                                pasangers = new Pasangers();
+                                cashbox = new Cashbox();
                                 constructor = new ConstructorTrain();
                                 train = new Train();
-                                display = new Display(direction, pasangers, train);
+                                display = new Display(direction, cashbox, train);
                             }
                             else if(userChoice == "2")
                             {
@@ -133,9 +133,9 @@ namespace CSLight13_7
     class Display
     {
         private Direction _direction;
-        private Pasangers _pasangers;
+        private Cashbox _pasangers;
         private Train _train;
-        public Display(Direction direction, Pasangers pasangers, Train train)
+        public Display(Direction direction, Cashbox pasangers, Train train)
         {
             _direction = direction;
             _pasangers = pasangers;
@@ -179,14 +179,14 @@ namespace CSLight13_7
         }
     }
 
-    class Pasangers
+    class Cashbox
     {
-        private Random random = new Random();
+        private Random _random = new Random();
         public int countPasangers { get; private set; }
 
         public int SellingTicket()
         {
-            countPasangers = random.Next(1, 500);
+            countPasangers = _random.Next(1, 500);
 
             return countPasangers;
         }
@@ -194,17 +194,17 @@ namespace CSLight13_7
 
     class Train
     {
-        private List<Wagons> _train = new List<Wagons>();
+        private List<Wagons> _wagons = new List<Wagons>();
         public int CountLuxWagons { get; private set; }
         public int CountBusinessWagons { get; private set; }
         public int CountEconomWagons { get; private set; }
         public int CountPlaceOfTrain { get; private set; }
 
-        public void CreateTrain(List<Wagons> train)
+        public void CreateTrain(List<Wagons> wagons)
         {
-            _train = train;
+            _wagons = wagons;
 
-            foreach (Wagons i in train)
+            foreach (Wagons i in wagons)
             {
                 if (i._typeWagon == "Люкс")
                     CountLuxWagons += 1;
@@ -223,8 +223,8 @@ namespace CSLight13_7
 
     class ConstructorTrain
     {
-        private List<Wagons> train = new List<Wagons>();
-        private Random random = new Random();
+        private List<Wagons> _wagons = new List<Wagons>();
+        private Random _random = new Random();
 
         public List<Wagons> CreateTrain(int countPasengers)
         {
@@ -261,55 +261,55 @@ namespace CSLight13_7
                 {
                     case "1":
                         Lux lux = new Lux();
-                        train.Add(lux);
+                        _wagons.Add(lux);
                         countPlaces += lux._capacity;
                         break;
                     case "2":
-                        for (int i = train.Count - 1; i >= 0; i--)
+                        for (int i = _wagons.Count - 1; i >= 0; i--)
                         {
-                            if (train[i]._typeWagon == "Люкс")
+                            if (_wagons[i]._typeWagon == "Люкс")
                             {
-                                countPlaces -= train[i]._capacity;
-                                train.Remove(train[i]);
+                                countPlaces -= _wagons[i]._capacity;
+                                _wagons.Remove(_wagons[i]);
                                 break;
                             }
                         }
                         break;
                     case "3":
                         Business business = new Business();
-                        train.Add(business);
+                        _wagons.Add(business);
                         countPlaces += business._capacity;
                         break;
                     case "4":
-                        for (int i = train.Count - 1; i >= 0; i--)
+                        for (int i = _wagons.Count - 1; i >= 0; i--)
                         {
-                            if (train[i]._typeWagon == "Бизнес")
+                            if (_wagons[i]._typeWagon == "Бизнес")
                             {
-                                countPlaces -= train[i]._capacity;
-                                train.Remove(train[i]);
+                                countPlaces -= _wagons[i]._capacity;
+                                _wagons.Remove(_wagons[i]);
                                 break;
                             }
                         }
                         break;
                     case "5":
                         Econom econom = new Econom();
-                        train.Add(econom);
+                        _wagons.Add(econom);
                         countPlaces += econom._capacity;
                         break;
                     case "6":
-                        for (int i = train.Count - 1; i >= 0; i--)
+                        for (int i = _wagons.Count - 1; i >= 0; i--)
                         {
-                            if (train[i]._typeWagon == "Эконом")
+                            if (_wagons[i]._typeWagon == "Эконом")
                             {
-                                countPlaces -= train[i]._capacity;
-                                train.Remove(train[i]);
+                                countPlaces -= _wagons[i]._capacity;
+                                _wagons.Remove(_wagons[i]);
                                 break;
                             }
                         }
                         break;
                     case "7":
                         reductorTrain = false;
-                        train = null;
+                        _wagons = null;
                         break;
                     case "0":
                         reductorTrain = false;
@@ -317,7 +317,7 @@ namespace CSLight13_7
                 }
             }
 
-            return train;
+            return _wagons;
         }
     }
 
