@@ -26,7 +26,7 @@ namespace CSLight13_7
             while (userInput != 0)
             {
                 Console.Clear();
-                railwayStation.InformationTable(direction, train);
+                railwayStation.DisplayInformationTable(direction, train);
 
                 if (!createDiractionCompleted)
                 {
@@ -71,7 +71,7 @@ namespace CSLight13_7
                         if (createDiractionCompleted && !sellingTicketCompleted)
                         {
                             Console.Clear();
-                            Console.WriteLine("Количество проданных билетов - " + railwayStation.SellingTicket());
+                            Console.WriteLine("Количество проданных билетов - " + railwayStation.SellTicket());
                             Console.ReadKey();
                             sellingTicketCompleted = true;
                         }
@@ -238,14 +238,14 @@ namespace CSLight13_7
             return _wagons;
         }
 
-        public int SellingTicket()
+        public int SellTicket()
         {
             CountPasangers = _random.Next(1, 500);
 
             return CountPasangers;
         }
 
-        public void InformationTable(Direction direction, Train train)
+        public void DisplayInformationTable(Direction direction, Train train)
         {
             if (direction.StartingPoint != null && direction.DestinationPoint != null)
             {
@@ -282,19 +282,19 @@ namespace CSLight13_7
         {
             _wagons = wagons;
 
-            foreach (Wagons i in wagons)
+            foreach (Wagons wagon in wagons)
             {
-                if (i._typeWagon == "Люкс")
+                if (wagon._typeWagon == "Люкс")
                     CountLuxWagons += 1;
 
 
-                if (i._typeWagon == "Бизнес")
+                if (wagon._typeWagon == "Бизнес")
                     CountBusinessWagons += 1;
 
-                if (i._typeWagon == "Эконом")
+                if (wagon._typeWagon == "Эконом")
                     CountEconomWagons += 1;
 
-                CountPlaceOfTrain += i._capacity;
+                CountPlaceOfTrain += wagon._capacity;
             }
         }
     }
