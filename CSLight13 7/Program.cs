@@ -11,10 +11,8 @@ namespace CSLight13_7
         static void Main(string[] args)
         {
             Direction direction = new Direction();
-            Cashbox cashbox = new Cashbox();
-            ConstructorTrain constructor = new ConstructorTrain();
+            RailwayStation railwayStation = new RailwayStation();
             Train train = new Train();
-            Display display = new Display(direction, cashbox, train);
 
             bool createDiractionCompleted = false;
             bool sellingTicketCompleted = false;
@@ -28,7 +26,7 @@ namespace CSLight13_7
             while (userInput != 0)
             {
                 Console.Clear();
-                display.DisplayProgress();
+                railwayStation.InformationTable(direction, train);
 
                 if (!createDiractionCompleted)
                 {
@@ -73,7 +71,7 @@ namespace CSLight13_7
                         if (createDiractionCompleted && !sellingTicketCompleted)
                         {
                             Console.Clear();
-                            Console.WriteLine("Количество проданных билетов - " + cashbox.SellingTicket());
+                            Console.WriteLine("Количество проданных билетов - " + railwayStation.SellingTicket());
                             Console.ReadKey();
                             sellingTicketCompleted = true;
                         }
@@ -81,7 +79,7 @@ namespace CSLight13_7
                     case 3:
                         if (sellingTicketCompleted && !createTrainCompleted)
                         {
-                            train.CreateTrain(constructor.CreateTrain(cashbox.countPasangers));
+                            train.CreateTrain(railwayStation.CreateTrain(railwayStation.CountPasangers));
                             createTrainCompleted = true;
                         }
                         break;
@@ -101,10 +99,8 @@ namespace CSLight13_7
                                 createTrainCompleted = false;
                                 sendTrainCompleted = false;
                                 direction = new Direction();
-                                cashbox = new Cashbox();
-                                constructor = new ConstructorTrain();
+                                railwayStation = new RailwayStation();
                                 train = new Train();
-                                display = new Display(direction, cashbox, train);
                             }
                             else if(userChoice == "2")
                             {
@@ -130,43 +126,6 @@ namespace CSLight13_7
         }
     }
 
-    class Display
-    {
-        private Direction _direction;
-        private Cashbox _pasangers;
-        private Train _train;
-        public Display(Direction direction, Cashbox pasangers, Train train)
-        {
-            _direction = direction;
-            _pasangers = pasangers;
-            _train = train;
-        }
-
-        public void DisplayProgress()
-        {
-            if (_direction.StartingPoint != null && _direction.DestinationPoint != null)
-            {
-                Console.WriteLine($"Направление: {_direction.StartingPoint} - {_direction.DestinationPoint}");
-                Console.WriteLine();
-            }
-
-            if (_pasangers.countPasangers != 0)
-            {
-                Console.WriteLine("Количество проданных билетов - " + _pasangers.countPasangers);
-                Console.WriteLine();
-            }
-
-            if (_train.CountPlaceOfTrain != 0)
-            {
-                Console.WriteLine("Вагонов Люкс в поезде - " + _train.CountLuxWagons);
-                Console.WriteLine("Вагонов Бизнес в поезде - " + _train.CountBusinessWagons);
-                Console.WriteLine("Вагонов Эконом в поезде - " + _train.CountEconomWagons);
-                Console.WriteLine("Всего мест в поезде - " + _train.CountPlaceOfTrain);
-                Console.WriteLine();
-            }
-        }
-    }
-
     class Direction
     {
         public string StartingPoint { get; private set; }
@@ -179,52 +138,11 @@ namespace CSLight13_7
         }
     }
 
-    class Cashbox
-    {
-        private Random _random = new Random();
-        public int countPasangers { get; private set; }
-
-        public int SellingTicket()
-        {
-            countPasangers = _random.Next(1, 500);
-
-            return countPasangers;
-        }
-    }
-
-    class Train
-    {
-        private List<Wagons> _wagons = new List<Wagons>();
-        public int CountLuxWagons { get; private set; }
-        public int CountBusinessWagons { get; private set; }
-        public int CountEconomWagons { get; private set; }
-        public int CountPlaceOfTrain { get; private set; }
-
-        public void CreateTrain(List<Wagons> wagons)
-        {
-            _wagons = wagons;
-
-            foreach (Wagons i in wagons)
-            {
-                if (i._typeWagon == "Люкс")
-                    CountLuxWagons += 1;
-
-
-                if (i._typeWagon == "Бизнес")
-                    CountBusinessWagons += 1;
-
-                if (i._typeWagon == "Эконом")
-                    CountEconomWagons += 1;
-
-                CountPlaceOfTrain += i._capacity;
-            }
-        }
-    }
-
-    class ConstructorTrain
+    class RailwayStation
     {
         private List<Wagons> _wagons = new List<Wagons>();
         private Random _random = new Random();
+        public int CountPasangers { get; private set; }
 
         public List<Wagons> CreateTrain(int countPasengers)
         {
@@ -318,6 +236,66 @@ namespace CSLight13_7
             }
 
             return _wagons;
+        }
+
+        public int SellingTicket()
+        {
+            CountPasangers = _random.Next(1, 500);
+
+            return CountPasangers;
+        }
+
+        public void InformationTable(Direction direction, Train train)
+        {
+            if (direction.StartingPoint != null && direction.DestinationPoint != null)
+            {
+                Console.WriteLine($"Направление: {direction.StartingPoint} - {direction.DestinationPoint}");
+                Console.WriteLine();
+            }
+
+            if (CountPasangers != 0)
+            {
+                Console.WriteLine("Количество проданных билетов - " + CountPasangers);
+                Console.WriteLine();
+            }
+
+            if (train.CountPlaceOfTrain != 0)
+            {
+                Console.WriteLine("Вагонов Люкс в поезде - " + train.CountLuxWagons);
+                Console.WriteLine("Вагонов Бизнес в поезде - " + train.CountBusinessWagons);
+                Console.WriteLine("Вагонов Эконом в поезде - " + train.CountEconomWagons);
+                Console.WriteLine("Всего мест в поезде - " + train.CountPlaceOfTrain);
+                Console.WriteLine();
+            }
+        }
+    }
+
+    class Train
+    {
+        private List<Wagons> _wagons = new List<Wagons>();
+        public int CountLuxWagons { get; private set; }
+        public int CountBusinessWagons { get; private set; }
+        public int CountEconomWagons { get; private set; }
+        public int CountPlaceOfTrain { get; private set; }
+
+        public void CreateTrain(List<Wagons> wagons)
+        {
+            _wagons = wagons;
+
+            foreach (Wagons i in wagons)
+            {
+                if (i._typeWagon == "Люкс")
+                    CountLuxWagons += 1;
+
+
+                if (i._typeWagon == "Бизнес")
+                    CountBusinessWagons += 1;
+
+                if (i._typeWagon == "Эконом")
+                    CountEconomWagons += 1;
+
+                CountPlaceOfTrain += i._capacity;
+            }
         }
     }
 
